@@ -2,11 +2,15 @@ from socket import *
 msg = "\r\n I love computer networks!"
 endmsg = "\r\n.\r\n"
 # Choose a mail server (e.g. Google mail server) and call it mailserver
-mailserver = ('mail.smtp2go.com', 80)
+print("establishing mailserver\n")
+mailserver = ('smtp.mail.yahoo.com', 587 )
+
 # Create socket called clientSocket and establish a TCP connection with mailserver
 #Fill in start
+print("creating socket\n")
 clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect(mailserver)
+
 #Fill in end
 recv = clientSocket.recv(1024).decode()
 print(recv)
@@ -18,59 +22,54 @@ clientSocket.send(heloCommand.encode())
 recv1 = clientSocket.recv(1024).decode()
 print(recv1)
 if recv1[:3] != '250':
- print('250 reply not received from server.')
+    print('250 reply not received from server.')
 
 # Send MAIL FROM command and print server response.
 # Fill in start
-mailFrom = "Mail from: <john.k.hoang@sjsu.edu> \r\n"
+print("sending mail")
+mailFrom = "MAIL FROM: <johnhoang5@gmail.com> \r\n"
 clientSocket.send(mailFrom.encode())
-recv2 = clientSocket.recv(1024)
+recv2 = clientSocket.recv(1024).decode()
 print("After MAIL FROM command: "+recv2)
 if recv1[:3] != '250':
     print('250 reply not received from server.')
-
 # Fill in end
+
 # Send RCPT TO command and print server response.
 # Fill in start
-ReceivingMail = "Mail destination: <johnhoang5@gmail.com> \r\n"
+print("receiving mail")
+rcptTo = "RCPT TO: <@epicturtlesfloat@aol.com> \r\n"
 clientSocket.send(rcptTo.encode())
-recv3 = clientSocket.recv(1024)
+recv3 = clientSocket.recv(1024).decode()
 print("After RCPT TO command: "+recv3)
 if recv1[:3] != '250':
     print('250 reply not received from server.')
-
 # Fill in end
+
 # Send DATA command and print server response.
 # Fill in start
 data = "DATA\r\n"
 clientSocket.send(data.encode())
-recv4 = clientSocket.recv(1024)
+recv4 = clientSocket.recv(1024).decode()
 print("After DATA command: "+recv4)
 if recv1[:3] != '250':
     print('250 reply not received from server.')
-
-
 # Fill in end
+
 # Send message data.
 # Fill in start
-subject = "Subject: testing mail \r\n\r\n"
-clientSocket.send(subject.encode())
-message = raw_input("Enter your message: \r\n")
-clientSocket.send(message.encode())
-clientSocket.send(endmsg.encode())
-recv_msg = clientSocket.recv(1024)
-
+clientSocket.send(msg.encode())
 # Fill in end
+
 # Message ends with a single period.
 # Fill in start
-print("Response after sending message body:"+recv_msg.decode())
+clientSocket.send(endmsg.encode())
 if recv1[:3] != '250':
     print('250 reply not received from server.')
 # Fill in end
+
 # Send QUIT command and get server response.
 # Fill in start
 clientSocket.send("QUIT\r\n".encode())
-message=clientSocket.recv(1024)
-print (message)
 clientSocket.close()
 # Fill in end
